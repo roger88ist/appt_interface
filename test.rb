@@ -5,8 +5,8 @@ class Interface
 
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
-		puts "You are going to see a specific appointment"
-		puts see_specific_appointment
+		puts "You are going to create an appointment"
+		puts create_appointment
 	end
 
 	# This is the code for a GET request
@@ -42,7 +42,7 @@ class Interface
 		  { 
 		    :body => {"appointment" => { "first_name" => retrieve_first_name, 
 		    															"last_name" => retrieve_last_name, 
-		    															"start_time" => get_appointment_start_time, 
+		    															"start_time" => get_appointment_start_time,
 		    															"comments" => leave_comment }}.to_json,
 		    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
 		  })
@@ -63,7 +63,9 @@ class Interface
 	#This is the code for a DELETE request	
 	def delete_appointment
 		# The url variable needs to have an id => url/1
-		response = HTTParty.delete(url)
+		id =  grab_id("delete")
+		address = @url + "/" + id
+		response = HTTParty.delete(address)
 		response.body
 	end
 
@@ -120,9 +122,6 @@ class Interface
 
 	def get_appointment_start_time
 		puts "Enter Appointment Start Time:"
-		# hour = get_hour
-		# minute = get_minute
-		# ampm = am_or_pm
 		"#{get_year}-#{get_month}-#{get_day} #{get_hour}:#{get_minute}#{am_or_pm}"
 	end
 
