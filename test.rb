@@ -6,7 +6,7 @@ class Interface
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
 		puts "You are going to see a specific appointment"
-		p see_specific_appointment
+		puts see_specific_appointment
 	end
 
 	# This is the code for a GET request
@@ -21,10 +21,14 @@ class Interface
 		see_appointments(address)
 	end
 
+	def ask_id_question(action)
+		puts "Provide appointment_id for the appointment you would like to #{action}:\n"
+		print ">"
+	end
+
 	def grab_id
-		loop do	
-			puts "Provide appointment_id for the appointment you would like to see.\n"
-			print ">"
+		loop do
+			ask_id_question("see")
 			id = gets.chomp
 			if id.to_i > 0
 				return id
