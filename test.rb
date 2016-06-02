@@ -16,24 +16,24 @@ class Interface
 	end
 
 	def see_specific_appointment
-		id = grab_id
+		id = grab_id("see")
 		address = @url + "/" + id
 		see_appointments(address)
 	end
 
-	def ask_id_question(action)
-		puts "Provide appointment_id for the appointment you would like to #{action}:\n"
-		print ">"
-	end
-
-	def grab_id
+	def grab_id(action)
 		loop do
-			ask_id_question("see")
+			ask_id_question(action)
 			id = gets.chomp
 			if id.to_i > 0
 				return id
 			end
 		end
+	end
+
+	def ask_id_question(action)
+		puts "Provide appointment_id for the appointment you would like to #{action}:\n"
+		print ">"
 	end
 
 	# This is the code for a POST request
