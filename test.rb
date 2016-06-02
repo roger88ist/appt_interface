@@ -25,6 +25,7 @@ url5 = "http://localhost:3000/api/appointments/5"
 # 	})
 # puts response.body
 
+#This is the code for a DELETE request	
 response = HTTParty.delete(url5)
 puts response.body
 
