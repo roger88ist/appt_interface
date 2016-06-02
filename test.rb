@@ -19,7 +19,10 @@ class Interface
 	def create_appointment
 		response = HTTParty.post(@url,
 		  { 
-		    :body => {"appointment" => { "first_name" => retrieve_first_name, "last_name" => retrieve_last_name, "comments" => leave_comment }}.to_json,
+		    :body => {"appointment" => { "first_name" => retrieve_first_name, 
+		    															"last_name" => retrieve_last_name, 
+		    															"start_time" => get_appointment_start_time, 
+		    															"comments" => leave_comment }}.to_json,
 		    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
 		  })
 		response.body
@@ -89,6 +92,47 @@ class Interface
 			print ">"
 			answer = gets.chomp
 			if ("1".."31").include?(answer)
+				return answer
+			end
+		end
+	end
+
+	def get_appointment_start_time
+		puts "Enter Appointment Start Time:"
+		# hour = get_hour
+		# minute = get_minute
+		# ampm = am_or_pm
+		"#{get_year}-#{get_month}-#{get_day} #{get_hour}:#{get_minute}#{am_or_pm}"
+	end
+
+	def get_hour
+		loop do
+			puts "Enter hour: (You will be asked for AM or PM shortly)\n"
+			print ">"
+			answer = gets.chomp
+			if ("1".."12").include?(answer)
+				return answer
+			end
+		end
+	end
+
+	def get_minute
+		loop do
+			puts "Enter minutes: (You will be asked for AM or PM shortly)\n"
+			print ">"
+			answer = gets.chomp
+			if ("0".."59").include?(answer)
+				return answer
+			end
+		end
+	end
+
+	def am_or_pm
+		loop do
+			puts "AM or PM?\n"
+			print ">"
+			answer = gets.chomp.downcase
+			if ["am","pm"].include?(answer)
 				return answer
 			end
 		end
