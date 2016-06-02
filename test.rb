@@ -5,8 +5,8 @@ class Interface
 
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
-		puts "You are going to create an appointment"
-		puts create_appointment
+		puts "You are going to update an appointment"
+		puts update_appointment
 	end
 
 	# This is the code for a GET request
@@ -52,17 +52,47 @@ class Interface
 	# This is the code for a PUT request
 	def update_appointment
 		# The url variable needs to have an id => url/1
-		response = HTTParty.put(url,
-			{
-				:body => {"appointment" => { "comments" => "Changed this comment using httparty put request"}}.to_json,
-				:headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-			})
-		response.body
+		id = grab_id("update")
+		address = @url + "/" + id
+		update_value = what_to_update
+		key = format_value(update_value)
+		if update_value == "s"
+			#code goes here to update start_time
+		else
+			response = HTTParty.put(address,
+				{
+					:body => {"appointment" => { key => new_value(key) }}.to_json,
+					:headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+				})
+			response.body
+		end
 	end
+
+	def what_to_update
+		loop do	
+			puts "What would you like to update?"
+			puts "(F)irst Name, (L)ast Name, (S)tart Time, (C)omments:\n"
+			print ">"
+			answer = gets.chomp.downcase
+			if ["f","l","s","c"].include?(answer)
+				return answer
+			end
+		end
+	end
+
+	def format_value(letter)
+		idx = ["f","l","s","c"].index(letter)
+		["first_name", "last_name", "start_time", "comments"][idx]
+	end
+
+	def new_value(string)
+		puts "Enter the new value for #{string}:\n"
+		print ">"
+		answer = gets.chomp
+	end	
 
 	#This is the code for a DELETE request	
 	def delete_appointment
-		# The url variable needs to have an id => url/1
 		id =  grab_id("delete")
 		address = @url + "/" + id
 		response = HTTParty.delete(address)
