@@ -51,21 +51,32 @@ class Interface
 
 	# This is the code for a PUT request
 	def update_appointment
-		# The url variable needs to have an id => url/1
 		id = grab_id("update")
 		address = @url + "/" + id
 		update_value = what_to_update
 		key = format_value(update_value)
 		if update_value == "s"
-			#code goes here to update start_time
+			response = change_start_time(address, key, get_appointment_start_time)
 		else
-			response = HTTParty.put(address,
+			response = change_data(address, key)
+		end
+		response.body
+	end
+
+	def change_start_time(address, key, method)
+		HTTParty.put(address,
+		{
+			:body => {"appointment" => { key => method }}.to_json,
+			:headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+		})
+	end
+
+	def change_data(address, key)
+		HTTParty.put(address,
 				{
 					:body => {"appointment" => { key => new_value(key) }}.to_json,
 					:headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
 				})
-			response.body
-		end
 	end
 
 	def what_to_update
