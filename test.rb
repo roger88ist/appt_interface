@@ -5,14 +5,31 @@ class Interface
 
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
-		puts "You are going to create an appointment"
-		p create_appointment
+		puts "You are going to see a specific appointment"
+		p see_specific_appointment
 	end
 
 	# This is the code for a GET request
-	def see_appointments
-		response = HTTParty.get(@url)
+	def see_appointments(address)
+		response = HTTParty.get(address)
 		response.body
+	end
+
+	def see_specific_appointment
+		id = grab_id
+		address = @url + "/" + id
+		see_appointments(address)
+	end
+
+	def grab_id
+		loop do	
+			puts "Provide appointment_id for the appointment you would like to see.\n"
+			print ">"
+			id = gets.chomp
+			if id.to_i > 0
+				return id
+			end
+		end
 	end
 
 	# This is the code for a POST request
