@@ -18,10 +18,13 @@ url5 = "http://localhost:3000/api/appointments/5"
 # puts response.body
 
 # This is the code for a PUT request
-response = HTTParty.put(url5,
-	{
-		:body => {"appointment" => { "comments" => "Changed this comment using httparty put request"}}.to_json,
-		:headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
-	})
+# response = HTTParty.put(url5,
+# 	{
+# 		:body => {"appointment" => { "comments" => "Changed this comment using httparty put request"}}.to_json,
+# 		:headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
+# 	})
+# puts response.body
+
+response = HTTParty.delete(url5)
 puts response.body
 
