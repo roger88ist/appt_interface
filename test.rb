@@ -61,6 +61,38 @@ class Interface
 		gets.chomp
 	end
 
+	def get_year
+		loop do
+			puts "Enter Year: (2016 or 2017)\n"
+			print ">"
+			answer = gets.chomp
+			if ("2016".."2017").include?(answer)
+				return answer
+			end
+		end
+	end
+
+	def get_month
+		loop do 
+			puts "Enter Month: (1-12)\n"
+			print ">"
+			answer = gets.chomp
+			if ("1".."12").include?(answer)
+				return answer
+			end
+		end
+	end
+
+	def get_day
+		loop do
+			puts "Enter Day of the Month: (1-31)\n"
+			print ">"
+			answer = gets.chomp
+			if ("1".."31").include?(answer)
+				return answer
+			end
+		end
+	end
 
 end
 
