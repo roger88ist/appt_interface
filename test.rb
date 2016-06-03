@@ -5,8 +5,8 @@ class Interface
 
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
-		puts "You are going to create an appointment"
-		puts create_appointment
+		puts "You are going to see appointments by range, press s for single as we are trying out single"
+		puts get_appointments_by_range
 	end
 
 	def get_appointments_by_range
@@ -14,9 +14,26 @@ class Interface
 		case search
 		when "s"
 			#code goes here for single day search
+			start = get_starting_date_range
+			ending = add_one_day(start)
+			address = @url + "/q?start_time=#{start}&end_time=#{ending}"
+			response = HTTParty.get(address)
+			response.body
 		else
 			#code goes here for range search
+
 		end
+	end
+
+	def get_starting_date_range
+		"#{get_year}-#{get_month}-#{get_day}"
+	end
+
+	def add_one_day(starting_point)
+		split = starting_point.split("-")
+		start = Time.new(split[0].to_i, split[1].to_i, split[2].to_i)
+		ending = start + 86400
+		ending_date = "#{ending.year}-#{ending.month}-#{ending.day}"
 	end
 
 	def single_or_range
