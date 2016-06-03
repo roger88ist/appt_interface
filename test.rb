@@ -33,7 +33,9 @@ class Interface
 		split = starting_point.split("-")
 		start = Time.new(split[0].to_i, split[1].to_i, split[2].to_i)
 		ending = start + 86400
-		ending_date = "#{ending.year}-#{ending.month}-#{ending.day}"
+		ending_month = ending.month < 10 ? "0#{ending.month}" : "#{ending.month}"
+		ending_day = ending.day < 10 ? "0#{ending.day}" : "#{ending.day}"
+		ending_date = "#{ending.year}-#{ending_month}-#{ending_day}"
 	end
 
 	def single_or_range
