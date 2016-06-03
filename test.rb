@@ -5,7 +5,7 @@ class Interface
 
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
-		puts "You are going to see appointments by range, press s for single as we are trying out single"
+		puts "You are going to see appointments by range, press 'r' for range as we are testing out the range"
 		puts get_appointments_by_range
 	end
 
@@ -21,8 +21,17 @@ class Interface
 			response.body
 		else
 			#code goes here for range search
-
+			start = get_starting_date_range
+			ending = add_one_day(get_ending_date)
+			address = @url + "/q?start_time=#{start}&end_time=#{ending}"
+			response = HTTParty.get(address)
+			response.body
 		end
+	end
+
+	def get_ending_date
+		puts "Now provide the ending date:"
+		get_starting_date_range
 	end
 
 	def get_starting_date_range
@@ -40,8 +49,8 @@ class Interface
 		split = starting_point.split("-")
 		start = Time.new(split[0].to_i, split[1].to_i, split[2].to_i)
 		ending = start + 86400
-		ending_month = ending.month < 10 ? "0#{ending.month}" : "#{ending.month}"
-		ending_day = ending.day < 10 ? "0#{ending.day}" : "#{ending.day}"
+		ending_month = format_leading_zero(ending.month)
+		ending_day = format_leading_zero(ending.day)
 		ending_date = "#{ending.year}-#{ending_month}-#{ending_day}"
 	end
 
