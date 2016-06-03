@@ -26,7 +26,14 @@ class Interface
 	end
 
 	def get_starting_date_range
-		"#{get_year}-#{get_month}-#{get_day}"
+		year = get_year
+		month = get_month
+		day = get_day
+		"#{format_leading_zero(year.to_i)}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)}"
+	end
+
+	def format_leading_zero(int)
+		int < 10 ? "0#{int}" : "#{int}"
 	end
 
 	def add_one_day(starting_point)
