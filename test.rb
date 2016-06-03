@@ -13,20 +13,26 @@ class Interface
 		search = single_or_range
 		case search
 		when "s"
-			#code goes here for single day search
+			single_day_search
+		else
+			multi_day_search
+		end
+	end
+
+	def single_day_search
 			start = get_starting_date_range
 			ending = add_one_day(start)
 			address = @url + "/q?start_time=#{start}&end_time=#{ending}"
 			response = HTTParty.get(address)
 			response.body
-		else
-			#code goes here for range search
-			start = get_starting_date_range
-			ending = add_one_day(get_ending_date)
-			address = @url + "/q?start_time=#{start}&end_time=#{ending}"
-			response = HTTParty.get(address)
-			response.body
-		end
+	end
+
+	def multi_day_search
+		start = get_starting_date_range
+		ending = add_one_day(get_ending_date)
+		address = @url + "/q?start_time=#{start}&end_time=#{ending}"
+		response = HTTParty.get(address)
+		response.body
 	end
 
 	def get_ending_date
