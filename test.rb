@@ -5,8 +5,29 @@ class Interface
 
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
-		puts "You are going to update an appointment"
-		puts update_appointment
+		puts "You are going to create an appointment"
+		puts create_appointment
+	end
+
+	def get_appointments_by_range
+		search = single_or_range
+		case search
+		when "s"
+			#code goes here for single day search
+		else
+			#code goes here for range search
+		end
+	end
+
+	def single_or_range
+		loop do
+			puts "Do you want to see appointments for a (s)ingle day or a (r)ange of days?\n"
+			print ">"
+			answer = gets.chomp.downcase
+			if ["s","r"].include?(answer)
+				return answer
+			end
+		end
 	end
 
 	# This is the code for a GET request
