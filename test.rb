@@ -5,11 +5,12 @@ class Interface
 
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
-		puts "You are going to see appointments by range, press 'r' for range as we are testing out the range"
-		puts get_appointments_by_range
+		puts "You are going to create appointment that does not conflict with existing appointments."
+		puts create_appointment
 	end
 
-	def get_appointments_by_range
+	# this method allows client to receive json of appointments based on date
+	def get_appointments_by_day
 		search = single_or_range
 		case search
 		when "s"
