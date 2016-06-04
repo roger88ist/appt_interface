@@ -5,10 +5,55 @@ class Interface
 
 	def initialize
 		@url = "http://localhost:3000/api/appointments"
-		puts "You are going to create appointment that does not conflict with existing appointments."
-		puts create_appointment
+		main_menu
 	end
 
+	def main_menu
+		system "clear"
+		continue = true
+		while continue
+			walk_on = first_question
+			case walk_on
+			when "1"
+				#search appointments
+				puts get_appointments_by_day
+			when "2"
+				#create an appointment
+				puts create_appointment
+			when "3"
+				#update an appointment
+				puts update_appointment
+			when "4"
+				#delete an appointment
+				puts delete_appointment
+			else
+				continue = false
+			end
+		end
+	end
+
+	def wait
+		puts "Hit Enter When You Are Ready to Continue."
+		gets
+		system "clear"
+	end
+
+	def first_question
+		loop do	
+			puts "What would you like to do? (enter number)"
+			puts "1. Search appointments."
+			puts "2. Create an appointment."
+			puts "3. Update an appointment."
+			puts "4. Delete an appointment."
+			puts "5. Exit application.\n"
+			print ">"
+			answer = gets.chomp
+			system "clear"
+			if ("1".."5").include?(answer)
+				return answer
+			end
+		end
+	end
 	# this method allows client to receive json of appointments based on date
 	def get_appointments_by_day
 		search = single_or_range
@@ -193,10 +238,10 @@ class Interface
 
 	def get_year
 		loop do
-			puts "Enter Year: (2016 or 2017)\n"
+			puts "Enter Year: (2013 through 2017)\n"
 			print ">"
 			answer = gets.chomp
-			if ("2016".."2017").include?(answer)
+			if ("2013".."2017").include?(answer)
 				return answer
 			end
 		end
