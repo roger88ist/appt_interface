@@ -171,10 +171,23 @@ class Interface
 		response.body
 	end
 
+	def get_appoinment_length
+		loop do
+			puts "How long will appointment last? (minutes)\n"
+			print ">"
+			answer = gets.chomp
+			if answer.to_i > 0
+				return answer
+			end
+		end
+	end
+
 	def change_start_time(address, key, method)
+		time = method
 		HTTParty.put(address,
 		{
-			:body => {"appointment" => { key => method }}.to_json,
+			:body => {"appointment" => { 	key => time[0],
+																		"end_time" => time[1] }}.to_json,
 			:headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
 		})
 	end
@@ -271,7 +284,19 @@ class Interface
 
 	def get_appointment_start_time
 		puts "Enter Appointment Start Time:"
-		"#{get_year}-#{get_month}-#{get_day} #{get_hour}:#{get_minute}#{am_or_pm}"
+		year = get_year
+		month = get_month
+		day = get_day
+		hour = get_hour
+		minute = get_minute
+		ampm = am_or_pm
+		ampm == "pm" ? hour = (hour.to_i + 12).to_s : hour
+		length = get_appoinment_length
+		conversion = length.to_i * 60
+		start = Time.new(year, month, day, hour, minute)
+		ending = start + conversion
+		# "#{year}-#{month}-#{day} #{hour}:#{minute}#{ampm}"
+		[start, ending]
 	end
 
 	def get_hour
@@ -298,7 +323,7 @@ class Interface
 
 	def am_or_pm
 		loop do
-			puts "AM or PM?\n"
+			puts "Appointment will be in the (AM) or (PM)?\n"
 			print ">"
 			answer = gets.chomp.downcase
 			if ["am","pm"].include?(answer)
