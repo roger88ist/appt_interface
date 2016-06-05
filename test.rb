@@ -15,27 +15,17 @@ class Interface
 			walk_on = first_question
 			case walk_on
 			when "1"
-				#search appointments
 				puts get_appointments_by_day
 			when "2"
-				#create an appointment
 				puts create_appointment
 			when "3"
-				#update an appointment
 				puts update_appointment
 			when "4"
-				#delete an appointment
 				puts delete_appointment
 			else
 				continue = false
 			end
 		end
-	end
-
-	def wait
-		puts "Hit Enter When You Are Ready to Continue."
-		gets
-		system "clear"
 	end
 
 	def first_question
@@ -146,12 +136,14 @@ class Interface
 
 	# This is the code for a POST request
 	def create_appointment
+		array = [retrieve_first_name, retrieve_last_name, get_appointment_start_time, leave_comment]
 		response = HTTParty.post(@url,
 		  { 
-		    :body => {"appointment" => { "first_name" => retrieve_first_name, 
-		    															"last_name" => retrieve_last_name, 
-		    															"start_time" => get_appointment_start_time,
-		    															"comments" => leave_comment }}.to_json,
+		    :body => {"appointment" => { "first_name" => array[0], 
+		    															"last_name" => array[1], 
+		    															"start_time" => array[2][0],
+		    															"end_time" => array[2][1],
+		    															"comments" => array[3]}}.to_json,
 		    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
 		  })
 		response.body
@@ -290,9 +282,16 @@ class Interface
 		hour = get_hour
 		minute = get_minute
 		ampm = am_or_pm
-		ampm == "pm" ? hour = (hour.to_i + 12).to_s : hour
+		ampm == "pm" && hour.to_i < 12 ? hour = (hour.to_i + 12).to_s : hour
 		length = get_appoinment_length
 		conversion = length.to_i * 60
+		puts "**************"
+		puts "year: #{year}"
+		puts "month: #{month}"
+		puts "day: #{day}"
+		puts "hour: #{hour}"
+		puts "minute: #{minute}"
+		puts "*****************"
 		start = Time.new(year, month, day, hour, minute)
 		ending = start + conversion
 		# "#{year}-#{month}-#{day} #{hour}:#{minute}#{ampm}"
