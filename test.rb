@@ -15,7 +15,7 @@ class Interface
 			walk_on = first_question
 			case walk_on
 			when "1"
-				puts get_appointments_by_day
+				puts search_appointments
 			when "2"
 				puts create_appointment
 			when "3"
@@ -45,41 +45,52 @@ class Interface
 		end
 	end
 	# this method allows client to receive json of appointments based on date
-	def get_appointments_by_day
+	def search_appointments
 		search = get_search_criteria
 		case search
 		when "1"
-			specific_time_search
+			search_by_time
 		when "2"
-			multi_day_search
-		when "3"
-			puts "You just searched by first name. Change me"
-		else
-			puts "you just searched by last name. Change me"
+			search_by_name("first")
+		else "3"
+			search_by_name("last")
 		end
+	end
+
+	def search_by_name(first_or_last)
+			query = ask_for_name(first_or_last)
+			address = @url + "/q?#{first_or_last}_name=#{query}"
+			response = HTTParty.get(address)
+			response.body
+	end
+
+	def ask_for_name(first_or_last)
+		system "clear"
+		puts "Enter #{first_or_last} name to search by:\n"
+		print ">"
+		answer = gets.chomp
 	end
 
 	def get_search_criteria
 		loop do
-			puts "What Would you like to search for? (enter number)\n"
-			puts "1. Specific Time Search"
-			puts "2. Range of Days"
-			puts "3. By First Name"
-			puts "4. By Last Name\n"
+			puts "How would you like to search? (enter number)\n"
+			puts "1. By Time"
+			puts "2. By First Name"
+			puts "3. By Last Name\n"
 			print ">"
 			answer = gets.chomp.downcase
-			if ("1".."4").include?(answer)
+			if ("1".."3").include?(answer)
 				return answer
 			end
 		end
 	end
 
-	def specific_time_search
-			start = get_specific_time_start
-			ending = get_specific_time_end
-			address = @url + "/q?start_time=#{start}&end_time=#{ending}"
-			response = HTTParty.get(address)
-			response.body
+	def search_by_time
+		start = get_specific_time_start
+		ending = get_specific_time_end
+		address = @url + "/q?start_time=#{start}&end_time=#{ending}"
+		response = HTTParty.get(address)
+		response.body
 	end
 
 	def get_specific_time_start
@@ -94,6 +105,7 @@ class Interface
 	end
 
 	def get_specific_time_end
+		puts "Now you will provide the end part of the search."
 		year = get_year
 		month = get_month
 		day = get_day
@@ -104,38 +116,38 @@ class Interface
 		"#{year}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)} #{format_leading_zero(hour.to_i)}:#{format_leading_zero(minute.to_i)}"
 	end
 
-	def multi_day_search
-		start = get_starting_date_range
-		ending = add_one_day(get_ending_date)
-		address = @url + "/q?start_time=#{start}&end_time=#{ending}"
-		response = HTTParty.get(address)
-		response.body
-	end
+	# def multi_day_search
+	# 	start = get_starting_date_range
+	# 	ending = add_one_day(get_ending_date)
+	# 	address = @url + "/q?start_time=#{start}&end_time=#{ending}"
+	# 	response = HTTParty.get(address)
+	# 	response.body
+	# end
 
-	def get_ending_date
-		puts "Now provide the ending date:"
-		get_starting_date_range
-	end
+	# def get_ending_date
+	# 	puts "Now provide the ending date:"
+	# 	get_starting_date_range
+	# end
 
-	def get_starting_date_range
-		year = get_year
-		month = get_month
-		day = get_day
-		"#{year}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)}"
-	end
+	# def get_starting_date_range
+	# 	year = get_year
+	# 	month = get_month
+	# 	day = get_day
+	# 	"#{year}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)}"
+	# end
 
 	def format_leading_zero(int)
 		int < 10 ? "0#{int}" : "#{int}"
 	end
 
-	def add_one_day(starting_point)
-		split = starting_point.split("-")
-		start = Time.new(split[0].to_i, split[1].to_i, split[2].to_i)
-		ending = start + 86400
-		ending_month = format_leading_zero(ending.month)
-		ending_day = format_leading_zero(ending.day)
-		ending_date = "#{ending.year}-#{ending_month}-#{ending_day}"
-	end
+	# def add_one_day(starting_point)
+	# 	split = starting_point.split("-")
+	# 	start = Time.new(split[0].to_i, split[1].to_i, split[2].to_i)
+	# 	ending = start + 86400
+	# 	ending_month = format_leading_zero(ending.month)
+	# 	ending_day = format_leading_zero(ending.day)
+	# 	ending_date = "#{ending.year}-#{ending_month}-#{ending_day}"
+	# end
 
 	# This is the code for a GET request
 	def see_appointments(address)
