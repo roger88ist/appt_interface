@@ -15,13 +15,13 @@ class Interface
 			walk_on = first_question
 			case walk_on
 			when "1"
-				puts search_appointments
+				p search_appointments
 			when "2"
-				puts create_appointment
+				p create_appointment
 			when "3"
-				puts update_appointment
+				p update_appointment
 			when "4"
-				puts delete_appointment
+				p delete_appointment
 			else
 				continue = false
 			end
@@ -49,12 +49,46 @@ class Interface
 		search = get_search_criteria
 		case search
 		when "1"
-			search_by_time
+			search_by_appointment_id
 		when "2"
+			search_by_time
+		when "3"
 			search_by_name("first")
-		else "3"
+		else 
 			search_by_name("last")
 		end
+	end
+
+	def get_search_criteria
+		loop do
+			puts "How would you like to search? (enter number)"
+			puts "1. By Appointment id"
+			puts "2. By Time"
+			puts "3. By First Name"
+			puts "4. By Last Name\n"
+			print ">"
+			answer = gets.chomp.downcase
+			if ("1".."4").include?(answer)
+				return answer
+			end
+		end
+	end
+
+	def search_by_appointment_id
+			puts "Enter Appointment ID of Interest."
+			print "id: "
+			id = gets.chomp
+			address = @url + "/#{id}"
+			response = HTTParty.get(address)
+			response.body		
+	end
+
+	def search_by_time
+		start = get_specific_time_start
+		ending = get_specific_time_end
+		address = @url + "/q?start_time=#{start}&end_time=#{ending}"
+		response = HTTParty.get(address)
+		response.body
 	end
 
 	def search_by_name(first_or_last)
@@ -71,28 +105,6 @@ class Interface
 		answer = gets.chomp
 	end
 
-	def get_search_criteria
-		loop do
-			puts "How would you like to search? (enter number)\n"
-			puts "1. By Time"
-			puts "2. By First Name"
-			puts "3. By Last Name\n"
-			print ">"
-			answer = gets.chomp.downcase
-			if ("1".."3").include?(answer)
-				return answer
-			end
-		end
-	end
-
-	def search_by_time
-		start = get_specific_time_start
-		ending = get_specific_time_end
-		address = @url + "/q?start_time=#{start}&end_time=#{ending}"
-		response = HTTParty.get(address)
-		response.body
-	end
-
 	def get_specific_time_start
 		year = get_year
 		month = get_month
@@ -105,7 +117,7 @@ class Interface
 	end
 
 	def get_specific_time_end
-		puts "Now you will provide the end part of the search."
+		print "\nNow you will provide the end part of the search.\n"
 		year = get_year
 		month = get_month
 		day = get_day
@@ -116,38 +128,9 @@ class Interface
 		"#{year}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)} #{format_leading_zero(hour.to_i)}:#{format_leading_zero(minute.to_i)}"
 	end
 
-	# def multi_day_search
-	# 	start = get_starting_date_range
-	# 	ending = add_one_day(get_ending_date)
-	# 	address = @url + "/q?start_time=#{start}&end_time=#{ending}"
-	# 	response = HTTParty.get(address)
-	# 	response.body
-	# end
-
-	# def get_ending_date
-	# 	puts "Now provide the ending date:"
-	# 	get_starting_date_range
-	# end
-
-	# def get_starting_date_range
-	# 	year = get_year
-	# 	month = get_month
-	# 	day = get_day
-	# 	"#{year}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)}"
-	# end
-
 	def format_leading_zero(int)
 		int < 10 ? "0#{int}" : "#{int}"
 	end
-
-	# def add_one_day(starting_point)
-	# 	split = starting_point.split("-")
-	# 	start = Time.new(split[0].to_i, split[1].to_i, split[2].to_i)
-	# 	ending = start + 86400
-	# 	ending_month = format_leading_zero(ending.month)
-	# 	ending_day = format_leading_zero(ending.day)
-	# 	ending_date = "#{ending.year}-#{ending_month}-#{ending_day}"
-	# end
 
 	# This is the code for a GET request
 	def see_appointments(address)
@@ -285,8 +268,7 @@ class Interface
 
 	def get_year
 		loop do
-			puts "Enter Year: (2013 through 2017)\n"
-			print ">"
+			print "Enter Year (2013 through 2017): "
 			answer = gets.chomp
 			if ("2013".."2017").include?(answer)
 				return answer
@@ -296,8 +278,7 @@ class Interface
 
 	def get_month
 		loop do 
-			puts "Enter Month: (1-12)\n"
-			print ">"
+			print "Enter Month (1-12): "
 			answer = gets.chomp
 			if ("1".."12").include?(answer)
 				return answer
@@ -307,8 +288,7 @@ class Interface
 
 	def get_day
 		loop do
-			puts "Enter Day of the Month: (1-31)\n"
-			print ">"
+			print "Enter Day of the Month (1-31): "
 			answer = gets.chomp
 			if ("1".."31").include?(answer)
 				return answer
@@ -334,8 +314,7 @@ class Interface
 
 	def get_hour
 		loop do
-			puts "Enter hour: (You will be asked for AM or PM shortly)\n"
-			print ">"
+			print "Enter hour (You will be asked for AM or PM shortly): "
 			answer = gets.chomp
 			if ("1".."12").include?(answer)
 				return answer
@@ -345,8 +324,7 @@ class Interface
 
 	def get_minute
 		loop do
-			puts "Enter minutes: (You will be asked for AM or PM shortly)\n"
-			print ">"
+			print "Enter minutes (without leading zero): "
 			answer = gets.chomp
 			if ("0".."59").include?(answer)
 				return answer
@@ -356,8 +334,7 @@ class Interface
 
 	def am_or_pm
 		loop do
-			puts "Appointment will be in the (AM) or (PM)?\n"
-			print ">"
+			print "Appointment will be in the (AM) or (PM)?: "
 			answer = gets.chomp.downcase
 			if ["am","pm"].include?(answer)
 				return answer
@@ -366,6 +343,5 @@ class Interface
 	end
 
 end
-
 
 instance = Interface.new
