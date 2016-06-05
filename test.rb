@@ -285,16 +285,8 @@ class Interface
 		ampm == "pm" && hour.to_i < 12 ? hour = (hour.to_i + 12).to_s : hour
 		length = get_appoinment_length
 		conversion = length.to_i * 60
-		puts "**************"
-		puts "year: #{year}"
-		puts "month: #{month}"
-		puts "day: #{day}"
-		puts "hour: #{hour}"
-		puts "minute: #{minute}"
-		puts "*****************"
 		start = Time.new(year, month, day, hour, minute)
 		ending = start + conversion
-		# "#{year}-#{month}-#{day} #{hour}:#{minute}#{ampm}"
 		[start, ending]
 	end
 
