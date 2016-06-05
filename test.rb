@@ -46,21 +46,62 @@ class Interface
 	end
 	# this method allows client to receive json of appointments based on date
 	def get_appointments_by_day
-		search = single_or_range
+		search = get_search_criteria
 		case search
-		when "s"
-			single_day_search
-		else
+		when "1"
+			specific_time_search
+		when "2"
 			multi_day_search
+		when "3"
+			puts "You just searched by first name. Change me"
+		else
+			puts "you just searched by last name. Change me"
 		end
 	end
 
-	def single_day_search
-			start = get_starting_date_range
-			ending = add_one_day(start)
+	def get_search_criteria
+		loop do
+			puts "What Would you like to search for? (enter number)\n"
+			puts "1. Specific Time Search"
+			puts "2. Range of Days"
+			puts "3. By First Name"
+			puts "4. By Last Name\n"
+			print ">"
+			answer = gets.chomp.downcase
+			if ("1".."4").include?(answer)
+				return answer
+			end
+		end
+	end
+
+	def specific_time_search
+			start = get_specific_time_start
+			ending = get_specific_time_end
 			address = @url + "/q?start_time=#{start}&end_time=#{ending}"
 			response = HTTParty.get(address)
 			response.body
+	end
+
+	def get_specific_time_start
+		year = get_year
+		month = get_month
+		day = get_day
+		hour = get_hour
+		minute = get_minute
+		ampm = am_or_pm
+		ampm == "pm" && hour.to_i < 12 ? hour = (hour.to_i + 12).to_s : hour
+		"#{year}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)} #{format_leading_zero(hour.to_i)}:#{format_leading_zero(minute.to_i)}"
+	end
+
+	def get_specific_time_end
+		year = get_year
+		month = get_month
+		day = get_day
+		hour = get_hour
+		minute = get_minute
+		ampm = am_or_pm
+		ampm == "pm" && hour.to_i < 12 ? hour = (hour.to_i + 12).to_s : hour
+		"#{year}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)} #{format_leading_zero(hour.to_i)}:#{format_leading_zero(minute.to_i)}"
 	end
 
 	def multi_day_search
@@ -80,7 +121,7 @@ class Interface
 		year = get_year
 		month = get_month
 		day = get_day
-		"#{format_leading_zero(year.to_i)}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)}"
+		"#{year}-#{format_leading_zero(month.to_i)}-#{format_leading_zero(day.to_i)}"
 	end
 
 	def format_leading_zero(int)
@@ -94,17 +135,6 @@ class Interface
 		ending_month = format_leading_zero(ending.month)
 		ending_day = format_leading_zero(ending.day)
 		ending_date = "#{ending.year}-#{ending_month}-#{ending_day}"
-	end
-
-	def single_or_range
-		loop do
-			puts "Do you want to see appointments for a (s)ingle day or a (r)ange of days?\n"
-			print ">"
-			answer = gets.chomp.downcase
-			if ["s","r"].include?(answer)
-				return answer
-			end
-		end
 	end
 
 	# This is the code for a GET request
