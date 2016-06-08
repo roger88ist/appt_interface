@@ -4,7 +4,8 @@ class Interface
 	attr_accessor :url
 
 	def initialize
-		@url = "http://localhost:3000/api/appointments"
+		# @url = "http://localhost:3000/api/appointments"
+		@url = "https://rogeriosappointment.herokuapp.com/api/appointments"
 		main_menu
 	end
 
@@ -165,10 +166,10 @@ class Interface
 		response = HTTParty.post(@url,
 		  { 
 		    :body => {"appointment" => { "first_name" => array[0], 
-		    															"last_name" => array[1], 
-		    															"start_time" => array[2][0],
-		    															"end_time" => array[2][1],
-		    															"comments" => array[3]}}.to_json,
+		    							 "last_name" => array[1], 
+		    							 "start_time" => array[2][0],
+		    							 "end_time" => array[2][1],
+		    							 "comments" => array[3]}}.to_json,
 		    :headers => { 'Content-Type' => 'application/json', 'Accept' => 'application/json'}
 		  })
 		response.body
